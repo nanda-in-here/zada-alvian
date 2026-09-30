@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b3d91">
+<meta name="description" content="Jadwal Pelajaran XI-8 SMA Negeri 3 Lamongan">
+<link rel="manifest" href="manifest.json">
+<title>Jadwal XI-8 SMA Negeri 3 Lamongan</title>
+
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;background:#eef2f7;color:#172033}
+header{background:linear-gradient(135deg,#0b3d91,#2563eb);color:white;text-align:center;padding:22px 15px}
+.logo{width:95px;height:95px;object-fit:cover;border-radius:18px;margin-bottom:10px;background:white;box-shadow:0 3px 12px rgba(0,0,0,.25)}
+header h1{margin:0;font-size:25px}
+header h2{margin:8px 0}
+header p{margin:5px}
+.nama{margin-top:15px;font-weight:bold;line-height:1.7}
+.container{max-width:1100px;margin:auto;padding:20px}
+.judul{text-align:center;margin-bottom:20px}
+.judul h2{color:#0b3d91}
+.hari{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:20px}
+.hari button{border:none;padding:11px 20px;border-radius:8px;background:white;color:#0b3d91;font-weight:bold;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.hari button.active{background:#2563eb;color:white}
+.hari button:hover{background:#1d4ed8;color:white}
+.table-box{background:white;border-radius:15px;overflow-x:auto;box-shadow:0 4px 15px rgba(0,0,0,.1)}
+table{width:100%;min-width:650px;border-collapse:collapse}
+th{background:#0b3d91;color:white;padding:14px}
+td{padding:12px 8px;text-align:center;border-bottom:1px solid #ddd}
+tr:hover td{background:#f8fafc}
+.jam-ke{font-weight:bold}.waktu{white-space:nowrap;font-weight:bold}.mapel{font-weight:bold}
+.upacara{background:#d9f99d!important;font-weight:bold}
+.istirahat{background:#fdba74!important;font-weight:bold}
+.ekskul{background:#86efac!important;font-weight:bold}
+.info{margin-top:20px;background:white;padding:20px;border-radius:15px;box-shadow:0 4px 15px rgba(0,0,0,.08)}
+.info h3{color:#0b3d91}
+.info strong{color:#0b3d91}
+footer{text-align:center;padding:25px;color:#64748b;font-size:13px}
+#notifikasi{display:none;position:fixed;top:20px;right:20px;background:#2563eb;color:white;padding:16px 20px;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.25);z-index:9999;font-weight:bold;max-width:320px;animation:muncul .4s ease}
+@keyframes muncul{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+#tombolNotif{position:fixed;bottom:20px;right:20px;z-index:9998;border:none;background:#2563eb;color:white;padding:12px 18px;border-radius:10px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+#tombolNotif:hover{background:#1d4ed8}
+#installBtn{position:fixed;bottom:75px;right:20px;z-index:9998;border:none;background:#0b3d91;color:white;padding:11px 16px;border-radius:10px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.2);display:none}
+.status{margin:15px auto 0;max-width:600px;text-align:center;font-size:13px;background:rgba(255,255,255,.15);padding:8px;border-radius:8px}
+@media(max-width:600px){
+header h1{font-size:21px}header h2{font-size:19px}.container{padding:12px}
+th,td{font-size:13px;padding:10px 6px}
+#notifikasi{top:15px;left:15px;right:15px;max-width:none;text-align:center}
+#tombolNotif{bottom:15px;left:15px;right:15px;width:calc(100% - 30px)}
+#installBtn{bottom:68px;left:15px;right:15px;width:calc(100% - 30px)}
+.logo{width:80px;height:80px}
+}
+</style>
+</head>
+
+<body>
+
+<div id="notifikasi"></div>
+<button id="installBtn">📱 Pasang Aplikasi</button>
+<button id="tombolNotif" onclick="aktifkanNotifikasi()">🔔 Aktifkan Notifikasi</button>
+
+<header>
+<img src="logo-smaga.png" alt="Logo SMAGA" class="logo">
+<h1>SMA NEGERI 3 LAMONGAN</h1>
+<h2>JADWAL PELAJARAN XI 8</h2>
+<p>SEMESTER GANJIL TP. 2026/2027</p>
+<div class="nama">ALFIAN AULIA FAJAR<br>ZADA RAISSA SADIDA</div>
+<div class="status" id="statusPWA">Jadwal XI-8</div>
+</header>
+
+<div class="container">
+<div class="judul">
+<h2>📚 Jadwal Pelajaran XI-8</h2>
+<p>Sesuai regulasi jam belajar terbaru</p>
+</div>
+
+<div class="hari">
+<button class="active" onclick="tampilkanHari('Senin',this)">Senin</button>
+<button onclick="tampilkanHari('Selasa',this)">Selasa</button>
+<button onclick="tampilkanHari('Rabu',this)">Rabu</button>
+<button onclick="tampilkanHari('Kamis',this)">Kamis</button>
+<button onclick="tampilkanHari('Jumat',this)">Jumat</button>
+</div>
+
+<div class="table-box">
+<table>
+<thead><tr><th>Jam Ke</th><th>Waktu</th><th>Mata Pelajaran</th></tr></thead>
+<tbody id="isiJadwal"></tbody>
+</table>
+</div>
+
+<div class="info">
+<h3>⏰ Regulasi Jam Belajar</h3>
+
+<p><b>Senin - Kamis</b></p>
+<p>
+Jam 1 : 07.00 - 07.40<br>
+Jam 2 : 07.40 - 08.20<br>
+Jam 3 : 08.20 - 09.00<br>
+Jam 4 : 09.00 - 09.40
+</p>
+<p><b>Istirahat Ke-1 (MBG) : 09.40 - 10.20</b></p>
+<p>
+Jam 5 : 10.20 - 11.00<br>
+Jam 6 : 11.00 - 11.40
+</p>
+<p><b>Istirahat Ke-2 : 11.40 - 12.30</b></p>
+<p>
+Jam 7 : 12.30 - 13.10<br>
+Jam 8 : 13.10 - 13.50<br>
+Jam 9 : 13.50 - 14.30<br>
+Jam 10 : 14.30 - 15.10
+</p>
+
+<hr>
+
+<p><b>Jumat</b></p>
+<p>
+Jam 1 : 06.30 - 07.30<br>
+Jam 2 : 07.30 - 08.10<br>
+Jam 3 : 08.10 - 08.50<br>
+Jam 4 : 08.50 - 09.30
+</p>
+<p><b>Istirahat Ke-1 (MBG) : 09.30 - 10.00</b></p>
+<p>
+Jam 5 : 10.00 - 10.40<br>
+Jam 6 : 10.40 - 11.20
+</p>
+<p><b>Istirahat Ke-2 : 11.20 - 12.30</b></p>
+<p>
+Jam 7 : 12.30 - 13.10<br>
+Jam 8 : 13.10 - 13.50<br>
+Jam 9 : 13.50 - 14.30<br>
+Jam 10 : 14.30 - 15.30
+</p>
+</div>
+</div>
+
+<footer>
+SMA Negeri 3 Lamongan • XI-8<br>
+ALFIAN AULIA FAJAR & ZADA RAISSA SADIDA
+</footer>
+
+<script>
+const jadwal={
+Senin:[
+["1","07.00 - 07.40","UPACARA","upacara"],
+["2","07.40 - 08.20","Bahasa Inggris",""],
+["3","08.20 - 09.00","Bahasa Inggris",""],
+["4","09.00 - 09.40","Bahasa Inggris",""],
+["","09.40 - 10.20","ISTIRAHAT KE-1 (MBG)","istirahat"],
+["5","10.20 - 11.00","Seni Budaya",""],
+["6","11.00 - 11.40","Seni Budaya",""],
+["","11.40 - 12.30","ISTIRAHAT KE-2","istirahat"],
+["7","12.30 - 13.10","Informatika",""],
+["8","13.10 - 13.50","Informatika",""],
+["9","13.50 - 14.30","Informatika",""],
+["10","14.30 - 15.10","Pendidikan Jasmani Olahraga dan Kesehatan",""]
+],
+Selasa:[
+["1","07.00 - 07.40","Fisika",""],["2","07.40 - 08.20","Fisika",""],["3","08.20 - 09.00","Fisika",""],
+["4","09.00 - 09.40","Pendidikan Agama dan Budi Pekerti",""],
+["","09.40 - 10.20","ISTIRAHAT KE-1 (MBG)","istirahat"],
+["5","10.20 - 11.00","Pendidikan Agama dan Budi Pekerti",""],
+["6","11.00 - 11.40","Pendidikan Agama dan Budi Pekerti",""],
+["","11.40 - 12.30","ISTIRAHAT KE-2","istirahat"],
+["7","12.30 - 13.10","Geografi",""],["8","13.10 - 13.50","Geografi",""],
+["9","13.50 - 14.30","Matematika Wajib",""],["10","14.30 - 15.10","Matematika Wajib",""]
+],
+Rabu:[
+["1","07.00 - 07.40","Informatika",""],["2","07.40 - 08.20","Informatika",""],
+["3","08.20 - 09.00","Pendidikan Pancasila dan Kewarganegaraan",""],
+["4","09.00 - 09.40","Pendidikan Pancasila dan Kewarganegaraan",""],
+["","09.40 - 10.20","ISTIRAHAT KE-1 (MBG)","istirahat"],
+["5","10.20 - 11.00","Bahasa Jawa",""],["6","11.00 - 11.40","Matematika Tingkat Lanjut",""],
+["","11.40 - 12.30","ISTIRAHAT KE-2","istirahat"],
+["7","12.30 - 13.10","Matematika Tingkat Lanjut",""],
+["8","13.10 - 13.50","Geografi",""],["9","13.50 - 14.30","Geografi",""],["10","14.30 - 15.10","Geografi",""]
+],
+Kamis:[
+["1","07.00 - 07.40","Pendidikan Jasmani Olahraga dan Kesehatan",""],
+["2","07.40 - 08.20","Pendidikan Jasmani Olahraga dan Kesehatan",""],
+["3","08.20 - 09.00","Matematika Wajib",""],["4","09.00 - 09.40","Matematika Wajib",""],
+["","09.40 - 10.20","ISTIRAHAT KE-1 (MBG)","istirahat"],
+["5","10.20 - 11.00","Prakarya dan Kewirausahaan",""],["6","11.00 - 11.40","Prakarya dan Kewirausahaan",""],
+["","11.40 - 12.30","ISTIRAHAT KE-2","istirahat"],
+["7","12.30 - 13.10","Sejarah",""],["8","13.10 - 13.50","Sejarah",""],
+["9","13.50 - 14.30","Bahasa Indonesia",""],["10","14.30 - 15.10","Bahasa Indonesia",""]
+],
+Jumat:[
+["1","06.30 - 07.30","JABRIK",""],["2","07.30 - 08.10","Fisika",""],["3","08.10 - 08.50","Fisika",""],
+["4","08.50 - 09.30","Matematika Tingkat Lanjut",""],
+["","09.30 - 10.00","ISTIRAHAT KE-1 (MBG)","istirahat"],
+["5","10.00 - 10.40","Matematika Tingkat Lanjut",""],["6","10.40 - 11.20","Matematika Tingkat Lanjut",""],
+["","11.20 - 12.30","ISTIRAHAT KE-2","istirahat"],
+["7","12.30 - 13.10","Bimbingan Konseling",""],["8","13.10 - 13.50","Bahasa Indonesia",""],
+["9","13.50 - 14.30","Bahasa Indonesia",""],["10","14.30 - 15.30","EKSKUL","ekskul"]
+]};
+
+function tampilkanHari(hari,tombol){
+document.querySelectorAll(".hari button").forEach(btn=>btn.classList.remove("active"));
+tombol.classList.add("active");
+const isi=document.getElementById("isiJadwal"); isi.innerHTML="";
+jadwal[hari].forEach(data=>{
+const baris=document.createElement("tr");
+if(data[3])baris.classList.add(data[3]);
+baris.innerHTML=`<td class="jam-ke">${data[0]}</td><td class="waktu">${data[1]}</td><td class="mapel">${data[2]}</td>`;
+isi.appendChild(baris);
+});
+}
+tampilkanHari("Senin",document.querySelector(".hari button"));
+
+async function aktifkanNotifikasi(){
+if(!("Notification" in window)){alert("Browser ini tidak mendukung notifikasi.");return}
+try{
+const izin=await Notification.requestPermission();
+if(izin==="granted"){
+alert("✅ Notifikasi berhasil diaktifkan!");
+document.getElementById("tombolNotif").style.display="none";
+new Notification("Jadwal XI-8",{body:"Notifikasi istirahat berhasil diaktifkan 🔔"});
+}else alert("❌ Izin notifikasi ditolak.");
+}catch(e){alert("Notifikasi membutuhkan browser/hosting yang mendukung HTTPS.")}
+}
+if("Notification" in window && Notification.permission==="granted")document.getElementById("tombolNotif").style.display="none";
+
+let notifSudahMuncul="";
+function cekNotifikasi(){
+const sekarang=new Date();
+const jam=String(sekarang.getHours()).padStart(2,"0");
+const menit=String(sekarang.getMinutes()).padStart(2,"0");
+const waktu=jam+":"+menit;
+let pesan="";
+if(sekarang.getDay()>=1&&sekarang.getDay()<=4){
+if(waktu==="09:40")pesan="🔔 Waktunya Istirahat Ke-1 (MBG)!";
+if(waktu==="11:40")pesan="🍱 Waktunya Istirahat Ke-2!";
+}
+if(sekarang.getDay()===5){
+if(waktu==="09:30")pesan="🔔 Waktunya Istirahat Ke-1 (MBG)!";
+if(waktu==="11:20")pesan="🍱 Waktunya Istirahat Ke-2!";
+}
+if(pesan&&notifSudahMuncul!==waktu){
+notifSudahMuncul=waktu;
+if("Notification" in window&&Notification.permission==="granted"){
+new Notification("Jadwal XI-8",{body:pesan});
+}
+const notif=document.getElementById("notifikasi");
+notif.textContent=pesan;notif.style.display="block";
+setTimeout(()=>notif.style.display="none",5000);
+}}
+setInterval(cekNotifikasi,1000);
+
+if("serviceWorker" in navigator){
+window.addEventListener("load",()=>{
+navigator.serviceWorker.register("sw.js")
+.then(()=>document.getElementById("statusPWA").textContent="✅ PWA siap digunakan")
+.catch(()=>document.getElementById("statusPWA").textContent="Mode website");
+});
+}
+
+let deferredPrompt;
+window.addEventListener("beforeinstallprompt",e=>{
+e.preventDefault();deferredPrompt=e;
+document.getElementById("installBtn").style.display="block";
+});
+document.getElementById("installBtn").addEventListener("click",async()=>{
+if(!deferredPrompt)return;
+deferredPrompt.prompt();
+await deferredPrompt.userChoice;
+deferredPrompt=null;
+document.getElementById("installBtn").style.display="none";
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "Jadwal XI-8 SMA Negeri 3 Lamongan",
+  "short_name": "Jadwal XI-8",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#eef2f7",
+  "theme_color": "#0b3d91",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo-smaga.png",
+      "sizes": "178x256",
+      "type": "image/png"
+    }
+  ]
+}
